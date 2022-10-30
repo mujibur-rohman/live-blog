@@ -75,3 +75,7 @@ h6 {
 .btn-category {
   @apply bg-gray-300 hover:bg-primary px-4 py-2 rounded-full font-medium text-white
 }
+
+.dropdown {
+  @apply bg-white rounded-md border-[1px] absolute text-xs right-0 top-10 transition-all duration-300
+}

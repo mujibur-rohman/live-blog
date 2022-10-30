@@ -32,9 +32,9 @@ const Profile = () => {
             <button className="btn bg-white text-primary text-sm w-full lg:w-3/4">
               Unfollow
             </button>
-            {/* <button className="btn bg-primary text-white text-sm w-full lg:w-3/4">
+            <button className="btn bg-primary text-white text-sm w-full lg:w-3/4">
               Follow
-            </button> */}
+            </button>
           </div>
         </div>
       </div>

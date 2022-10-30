@@ -1,21 +1,31 @@
 import {
+  ArrowRightOnRectangleIcon,
+  ChevronDownIcon,
   DocumentTextIcon,
   HomeIcon,
   PencilSquareIcon,
   UserIcon,
 } from '@heroicons/react/24/solid';
 import React, { useCallback, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
 import Drawer from './Drawer';
 import SearchMobile from './SearchMobile';
 
 const Header = () => {
   const [showDrawer, setShowDrawer] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleDrawer = useCallback(
     () => setShowDrawer(!showDrawer),
     [showDrawer]
+  );
+  const toggleDropdown = useCallback(
+    () => setShowDropdown(!showDropdown),
+    [showDropdown]
   );
   return (
     <header className="header fixed right-0 left-0 z-10">
@@ -55,39 +65,65 @@ const Header = () => {
           >
             <DocumentTextIcon width="20" className="text-sm" />
           </NavLink>
-          <NavLink
-            to="/add-article"
-            className="mobile-nav transisi"
-            onClick={toggleDrawer}
-          >
-            <PencilSquareIcon width="20" className="text-sm" />
-          </NavLink>
-          <NavLink
-            to="/profile"
-            className="mobile-nav transisi"
-            onClick={toggleDrawer}
-          >
-            <UserIcon width="20" className="text-sm" />
-          </NavLink>
+          {user && (
+            <>
+              <NavLink
+                to="/add-article"
+                className="mobile-nav transisi"
+                onClick={toggleDrawer}
+              >
+                <PencilSquareIcon width="20" className="text-sm" />
+              </NavLink>
+              <NavLink
+                to="/profile"
+                className="mobile-nav transisi"
+                onClick={toggleDrawer}
+              >
+                <UserIcon width="20" className="text-sm" />
+              </NavLink>
+            </>
+          )}
         </div>
       </div>
 
-      <div className="flex gap-5 items-center">
+      <div className="flex gap-5 items-center relative">
         <SearchMobile className="hidden md:flex bg-gray-100" />
-        <button className="btn bg-primary text-xs md:text-sm hover:bg-primaryAlt text-white">
-          Let's make an Article!
-        </button>
-
-        {/* <div className="flex gap-2 items-center">
-          <img
-            src="https://cdn1.vectorstock.com/i/1000x1000/51/05/male-profile-avatar-with-brown-hair-vector-12055105.jpg"
-            alt="avatar-user"
-            className="w-7 h-7 rounded-full"
-          />
-          <span className="text-text text-sm hidden md:inline-block">
-            Display Name
-          </span>
-        </div> */}
+        {!user ? (
+          <button
+            className="btn bg-primary text-xs md:text-sm hover:bg-primaryAlt text-white"
+            onClick={() => navigate('/login')}
+          >
+            Let's make an Article!
+          </button>
+        ) : (
+          <div
+            className="flex gap-2 items-center cursor-pointer"
+            onClick={toggleDropdown}
+          >
+            <img
+              src={user.photoURL}
+              className="w-7 h-7 rounded-full"
+              alt="avatar"
+            />
+            <span className="text-text text-sm hidden md:inline-block font-medium">
+              {user.displayName}
+            </span>
+            <ChevronDownIcon width="10" />
+          </div>
+        )}
+        <div
+          className={`dropdown ${showDropdown ? 'scale-100' : 'scale-0'}`}
+          onClick={async () => {
+            await logout();
+            toggleDropdown();
+            navigate('/login');
+          }}
+        >
+          <div className="flex gap-2 p-2 cursor-pointer">
+            <ArrowRightOnRectangleIcon width={'15'} />
+            <span>Logout</span>
+          </div>
+        </div>
       </div>
     </header>
   );
