@@ -26,13 +26,16 @@ const Register = () => {
     photo: null,
   };
   const validationSchema = yup.object({
-    displayName: yup.string().required().trim(),
+    displayName: yup
+      .string()
+      .required('display name is a required field')
+      .trim(),
     email: yup.string().required().email().trim(),
     password: yup.string().required().trim().min(6),
     confirmPassword: yup
       .string()
       .oneOf([yup.ref('password'), null], 'password must match')
-      .required(),
+      .required('confirm password is a required field'),
     photo: yup.mixed().required(),
   });
 
@@ -46,7 +49,7 @@ const Register = () => {
   };
 
   return (
-    <div className="bg-primary h-fit px-10 pb-10">
+    <div className=" h-fit pb-10">
       <ToastContainer
         position="bottom-center"
         autoClose={2000}

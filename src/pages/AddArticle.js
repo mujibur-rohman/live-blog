@@ -30,16 +30,13 @@ const AddArticle = () => {
       props.setFieldValue('content', '');
     }
     props.setSubmitting(false);
-    console.log(values);
   };
 
   const optionsCategory = [
-    { value: 'Olahraga', label: 'Olahraga' },
-    { value: 'Kuliner', label: 'Kuliner' },
-    { value: 'Teknologi', label: 'Teknologi' },
-    { value: 'Kesehatan', label: 'Kesehatan' },
-    { value: 'Entertainment', label: 'Entertainment' },
-    { value: 'Fasion', label: 'Fasion' },
+    { value: 1, label: 'Olahraga' },
+    { value: 2, label: 'Fashion' },
+    { value: 3, label: 'Teknologi' },
+    { value: 4, label: 'Travel' },
   ];
 
   return (
@@ -53,7 +50,6 @@ const AddArticle = () => {
         onSubmit={onSubmit}
       >
         {(props) => {
-          console.log(props.values.content);
           const handleChangeContent = (body) => {
             setContent(body);
             props.setFieldValue(
@@ -131,7 +127,7 @@ const AddArticle = () => {
                     : 'bg-primary'
                 } text-white mt-6`}
               >
-                Publish
+                {props.isSubmitting ? 'Please Wait' : 'Publish'}
               </button>
             </Form>
           );

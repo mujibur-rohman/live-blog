@@ -24,3 +24,31 @@ export const ADD_USERS = gql`
     }
   }
 `;
+
+export const ADD_ARTICLE = gql`
+  mutation AddArticle(
+    $title: String!
+    $content: String!
+    $category_id: Int!
+    $userId: String!
+  ) {
+    insert_articles(
+      objects: {
+        title: $title
+        content: $content
+        category_id: $category_id
+        userId: $userId
+      }
+    ) {
+      returning {
+        id
+        title
+        content
+        view
+        category_id
+        userId
+        created_at
+      }
+    }
+  }
+`;

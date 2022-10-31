@@ -12,7 +12,7 @@ const Articles = () => {
   return (
     <>
       <div className="mb-3 mt-5 md:mt-2 flex gap-4 ">
-        <div className="flex gap-5">
+        <div className="flex gap-5 overflow-auto scrollbar-hide">
           <NavLink to="/articles" end className="btn-category transisi">
             All
           </NavLink>

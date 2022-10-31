@@ -7,9 +7,12 @@ import {
   UserIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
 const Drawer = ({ toggleDrawer, showDrawer }) => {
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
   return (
     <aside
       className={`${
@@ -35,22 +38,37 @@ const Drawer = ({ toggleDrawer, showDrawer }) => {
             <DocumentTextIcon width="20" className="text-sm" />
             <p className="text-sm">Newest Article</p>
           </NavLink>
-          <NavLink
-            to="/add-article"
-            className="mobile-nav"
-            onClick={toggleDrawer}
-          >
-            <PencilSquareIcon width="20" className="text-sm" />
-            <p className="text-sm">Add Article</p>
-          </NavLink>
-          <NavLink to="/profile" className="mobile-nav" onClick={toggleDrawer}>
-            <UserIcon width="20" className="text-sm" />
-            <p className="text-sm">Profile</p>
-          </NavLink>
-          <div className="mobile-nav cursor-pointer">
-            <ArrowLeftOnRectangleIcon width="20" className="text-sm" />
-            <button className="text-sm">Logout</button>
-          </div>
+          {user && (
+            <>
+              <NavLink
+                to="/add-article"
+                className="mobile-nav"
+                onClick={toggleDrawer}
+              >
+                <PencilSquareIcon width="20" className="text-sm" />
+                <p className="text-sm">Add Article</p>
+              </NavLink>
+              <NavLink
+                to="/profile"
+                className="mobile-nav"
+                onClick={toggleDrawer}
+              >
+                <UserIcon width="20" className="text-sm" />
+                <p className="text-sm">Profile</p>
+              </NavLink>
+              <div
+                className="mobile-nav cursor-pointer"
+                onClick={async () => {
+                  await logout();
+                  toggleDrawer();
+                  navigate('/login');
+                }}
+              >
+                <ArrowLeftOnRectangleIcon width="20" className="text-sm" />
+                <button className="text-sm">Logout</button>
+              </div>
+            </>
+          )}
         </div>
       </div>
       <div
