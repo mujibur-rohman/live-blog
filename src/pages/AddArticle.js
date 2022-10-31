@@ -35,7 +35,6 @@ const AddArticle = () => {
 
   const onSubmit = async (values, props) => {
     if (values.content === '<p></p>\n') {
-      console.log(true);
       props.setFieldValue('content', '');
     }
 

@@ -52,3 +52,28 @@ export const ADD_ARTICLE = gql`
     }
   }
 `;
+
+export const GET_ALL_ARTICLES = gql`
+  query GetAllArticles {
+    articles(order_by: { id: desc }) {
+      id
+      title
+      content
+      view
+      created_at
+      category {
+        id
+        name
+      }
+      user {
+        id
+        photoURL
+        email
+        displayName
+      }
+      comments {
+        id
+      }
+    }
+  }
+`;
