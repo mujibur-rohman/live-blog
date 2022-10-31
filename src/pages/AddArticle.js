@@ -6,11 +6,20 @@ import * as yup from 'yup';
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import Select from 'react-select';
+import { ADD_ARTICLE } from '../utility/constant';
+import { useMutation } from '@apollo/client';
+import useAuth from '../hooks/useAuth';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const AddArticle = () => {
   const TextState = EditorState.createEmpty();
   const [content, setContent] = useState(TextState);
   const [showInputCategory, setShowInputCategory] = useState(false);
+  const [addArticle] = useMutation(ADD_ARTICLE);
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   const initialValues = {
     title: '',
@@ -24,12 +33,36 @@ const AddArticle = () => {
     category: yup.string().required().trim(),
   });
 
-  const onSubmit = (values, props) => {
+  const onSubmit = async (values, props) => {
     if (values.content === '<p></p>\n') {
       console.log(true);
       props.setFieldValue('content', '');
     }
+
+    await addArticle({
+      variables: {
+        title: values.title,
+        content: values.content,
+        category_id: values.category,
+        userId: user.uid,
+      },
+    });
+    props.resetForm();
+    setContent(EditorState.createEmpty());
     props.setSubmitting(false);
+    toast.success('Successful Article Added', {
+      position: 'bottom-center',
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: 'dark',
+    });
+    setTimeout(() => {
+      navigate('/');
+    }, 3000);
   };
 
   const optionsCategory = [
@@ -41,6 +74,17 @@ const AddArticle = () => {
 
   return (
     <>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={2000}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={false}
+        pauseOnHover={false}
+        theme="dark"
+      />
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-bold">New Article</h2>
       </div>
