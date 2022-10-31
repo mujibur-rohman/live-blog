@@ -54,8 +54,36 @@ export const ADD_ARTICLE = gql`
 `;
 
 export const GET_ALL_ARTICLES = gql`
-  query GetAllArticles {
+  subscription GetAllArticles {
     articles(order_by: { id: desc }) {
+      id
+      title
+      content
+      view
+      created_at
+      category {
+        id
+        name
+      }
+      user {
+        id
+        photoURL
+        email
+        displayName
+      }
+      comments {
+        id
+      }
+    }
+  }
+`;
+
+export const GET_ARTICLES_BY_CATEGORY = gql`
+  subscription GetAllArticlesCat($cat: String!) {
+    articles(
+      order_by: { id: desc }
+      where: { category: { name: { _eq: $cat } } }
+    ) {
       id
       title
       content

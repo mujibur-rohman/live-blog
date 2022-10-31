@@ -19,7 +19,7 @@ const Articles = () => {
           {categories.map((cat) => (
             <NavLink
               key={cat.id}
-              to={`${cat.name.toLowerCase()}`}
+              to={`${cat.name}`}
               className="btn-category transisi"
             >
               {cat.name}

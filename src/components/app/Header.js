@@ -16,7 +16,7 @@ import SearchMobile from './SearchMobile';
 const Header = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
 
   const toggleDrawer = useCallback(
@@ -49,52 +49,56 @@ const Header = () => {
         >
           LiveArticle
         </Link>
-        <div className="flex gap-3">
-          <NavLink
-            to="/"
-            end
-            className="mobile-nav transisi"
-            onClick={toggleDrawer}
-          >
-            <HomeIcon width="20" className="text-sm" />
-          </NavLink>
-          <NavLink
-            to="/articles"
-            className="mobile-nav transisi"
-            onClick={toggleDrawer}
-          >
-            <DocumentTextIcon width="20" className="text-sm" />
-          </NavLink>
-          {user && (
-            <>
-              <NavLink
-                to="/add-article"
-                className="mobile-nav transisi"
-                onClick={toggleDrawer}
-              >
-                <PencilSquareIcon width="20" className="text-sm" />
-              </NavLink>
-              <NavLink
-                to="/profile"
-                className="mobile-nav transisi"
-                onClick={toggleDrawer}
-              >
-                <UserIcon width="20" className="text-sm" />
-              </NavLink>
-            </>
-          )}
-        </div>
+        {loading || (
+          <div className="flex gap-3">
+            <NavLink
+              to="/"
+              end
+              className="mobile-nav transisi"
+              onClick={toggleDrawer}
+            >
+              <HomeIcon width="20" className="text-sm" />
+            </NavLink>
+            <NavLink
+              to="/articles"
+              className="mobile-nav transisi"
+              onClick={toggleDrawer}
+            >
+              <DocumentTextIcon width="20" className="text-sm" />
+            </NavLink>
+            {user && (
+              <>
+                <NavLink
+                  to="/add-article"
+                  className="mobile-nav transisi"
+                  onClick={toggleDrawer}
+                >
+                  <PencilSquareIcon width="20" className="text-sm" />
+                </NavLink>
+                <NavLink
+                  to="/profile"
+                  className="mobile-nav transisi"
+                  onClick={toggleDrawer}
+                >
+                  <UserIcon width="20" className="text-sm" />
+                </NavLink>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex gap-5 items-center relative">
         <SearchMobile className="hidden md:flex bg-gray-100" />
         {!user ? (
-          <button
-            className="btn bg-primary text-xs md:text-sm hover:bg-primaryAlt text-white"
-            onClick={() => navigate('/login')}
-          >
-            Let's make an Article!
-          </button>
+          loading || (
+            <button
+              className="btn bg-primary text-xs md:text-sm hover:bg-primaryAlt text-white"
+              onClick={() => navigate('/login')}
+            >
+              Let's make an Article!
+            </button>
+          )
         ) : (
           <div
             className="flex gap-2 items-center cursor-pointer"

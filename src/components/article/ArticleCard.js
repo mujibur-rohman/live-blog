@@ -6,7 +6,7 @@ import React from 'react';
 
 const ArticleCard = ({ drag, article }) => {
   const navigate = useNavigate();
-  console.log(article);
+  console.log(new Date(article.created_at));
 
   return (
     <motion.div
