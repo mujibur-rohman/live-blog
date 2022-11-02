@@ -105,3 +105,78 @@ export const GET_ARTICLES_BY_CATEGORY = gql`
     }
   }
 `;
+
+export const GET_POPULAR_ARTICLES = gql`
+  subscription GetArticlesPopular {
+    articles(order_by: { view: desc }, limit: 5) {
+      id
+      title
+      content
+      view
+      created_at
+      user {
+        id
+        photoURL
+        email
+        displayName
+      }
+      comments {
+        id
+      }
+      category {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_NEWEST_ARTICLES = gql`
+  subscription GetNewestArticles {
+    articles(limit: 4, order_by: { id: desc }) {
+      id
+      title
+      content
+      view
+      created_at
+      user {
+        id
+        photoURL
+        email
+        displayName
+      }
+      comments {
+        id
+      }
+      category {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_MY_ARTICLES = gql`
+  subscription GetMyArticles($uid: String!) {
+    articles(order_by: { id: desc }, where: { user: { id: { _eq: $uid } } }) {
+      id
+      title
+      content
+      view
+      created_at
+      user {
+        id
+        photoURL
+        email
+        displayName
+      }
+      comments {
+        id
+      }
+      category {
+        id
+        name
+      }
+    }
+  }
+`;

@@ -13,7 +13,7 @@ import useAuth from '../../hooks/useAuth';
 import Drawer from './Drawer';
 import SearchMobile from './SearchMobile';
 
-const Header = () => {
+const Author = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const { user, logout, loading } = useAuth();
@@ -133,4 +133,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Author;

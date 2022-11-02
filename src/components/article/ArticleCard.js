@@ -3,16 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import parse from 'html-react-parser';
 import React from 'react';
+import { formatDistanceToNowStrict } from 'date-fns';
 
 const ArticleCard = ({ drag, article }) => {
   const navigate = useNavigate();
-  console.log(new Date(article.created_at));
-
+  const dateToNow = formatDistanceToNowStrict(new Date(article.created_at));
   return (
     <motion.div
       className={`bg-white ${
         drag && 'active:cursor-grabbing cursor-grab'
-      } rounded-2xl p-4 min-w-[13rem] md:min-w-[24rem]`}
+      } rounded-2xl p-4 min-w-[13rem] md:min-w-[24rem] self-start`}
     >
       <h3
         className="font-medium text-lg cursor-pointer"
@@ -21,12 +21,17 @@ const ArticleCard = ({ drag, article }) => {
         {article.title}
       </h3>
       <div className="flex flex-col gap-1 mb-1">
-        <span className="text-sm text-gray-400">3 minutes ago</span>
+        <span className="text-sm text-gray-400">{dateToNow}</span>
       </div>
       <div className="flex flex-col gap-1 mb-1 bg-orange-400 w-fit py-1 px-2 rounded-full">
         <span className="text-xs text-white">{article.category.name}</span>
       </div>
-      <React.Fragment>{parse(article.content)}</React.Fragment>
+      <>
+        <div>{parse(article.content.substr(0, 200))}</div>
+        <span className="text-blue-400 inline underline cursor-pointer">
+          Baca Selengkapnya
+        </span>
+      </>
       <div className="mt-4 flex justify-between">
         <span className="text-sm text-text inline-block underline cursor-pointer">
           by {article.user.displayName}

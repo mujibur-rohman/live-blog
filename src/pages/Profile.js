@@ -1,7 +1,19 @@
+import { useSubscription } from '@apollo/client';
 import React from 'react';
 import ArticleCard from '../components/article/ArticleCard';
+import SkeletonCard from '../components/skeleton/SkeletonCard';
+import useAuth from '../hooks/useAuth';
+import { GET_MY_ARTICLES } from '../utility/constant';
 
 const Profile = () => {
+  const { user } = useAuth();
+  const { data, loading, error } = useSubscription(GET_MY_ARTICLES, {
+    variables: {
+      uid: user.uid,
+    },
+  });
+
+  if (error) console.log(error);
   return (
     <>
       <div className="flex flex-col md:flex-row md:items-center justify-around border-b-[1px] pt-3 pb-7 gap-6">
@@ -42,8 +54,20 @@ const Profile = () => {
         <h2 className="text-lg lg:text-2xl font-bold">Articles</h2>
       </div>
       <div className="flex flex-col lg:grid grid-cols-2 gap-3">
-        <ArticleCard />
-        <ArticleCard />
+        {loading && (
+          <>
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </>
+        )}
+        {data?.articles?.map((article) => (
+          <ArticleCard article={article} key={article?.id} />
+        ))}
+        {data?.articles.length === 0 && (
+          <p className="text-center font-medium w-full">No Articles</p>
+        )}
       </div>
     </>
   );

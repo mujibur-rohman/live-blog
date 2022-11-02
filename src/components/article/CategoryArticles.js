@@ -21,7 +21,9 @@ const CategoryArticles = () => {
       </div>
       <div className="flex flex-col lg:grid grid-cols-2 gap-3">
         {data?.articles?.length === 0 && (
-          <p className="text-center font-medium text-xl">No Articles</p>
+          <p className="text-center font-medium text-xl w-screen">
+            No Articles
+          </p>
         )}
         {loading && (
           <>

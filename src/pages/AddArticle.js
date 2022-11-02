@@ -36,32 +36,32 @@ const AddArticle = () => {
   const onSubmit = async (values, props) => {
     if (values.content === '<p></p>\n') {
       props.setFieldValue('content', '');
+    } else {
+      await addArticle({
+        variables: {
+          title: values.title,
+          content: values.content,
+          category_id: values.category,
+          userId: user.uid,
+        },
+      });
+      props.resetForm();
+      setContent(EditorState.createEmpty());
+      props.setSubmitting(false);
+      toast.success('Successful Article Added', {
+        position: 'bottom-center',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'dark',
+      });
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
     }
-
-    await addArticle({
-      variables: {
-        title: values.title,
-        content: values.content,
-        category_id: values.category,
-        userId: user.uid,
-      },
-    });
-    props.resetForm();
-    setContent(EditorState.createEmpty());
-    props.setSubmitting(false);
-    toast.success('Successful Article Added', {
-      position: 'bottom-center',
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'dark',
-    });
-    setTimeout(() => {
-      navigate('/');
-    }, 3000);
   };
 
   const optionsCategory = [
@@ -103,7 +103,9 @@ const AddArticle = () => {
           return (
             <Form className="flex flex-col gap-2">
               <div className="flex flex-col gap-2">
-                <label>Title</label>
+                <label>
+                  Title <span className="text-red-400">*</span>
+                </label>
                 <Field
                   type="text"
                   name="title"
@@ -119,7 +121,9 @@ const AddArticle = () => {
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <label>Content</label>
+                <label>
+                  Content <span className="text-red-400">*</span>
+                </label>
                 <TextEditor
                   handleChange={handleChangeContent}
                   content={content}
@@ -129,7 +133,9 @@ const AddArticle = () => {
                 </ErrorMessage>
               </div>
               <div className="flex flex-col gap-2">
-                <label>Category</label>
+                <label>
+                  Category <span className="text-red-400">*</span>
+                </label>
                 <Select
                   options={optionsCategory}
                   onChange={(e) => {
