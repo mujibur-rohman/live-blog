@@ -241,3 +241,29 @@ export const UNFOLLOW = gql`
     }
   }
 `;
+
+export const ARTICLE_DETAIL = gql`
+  subscription ArticleDetail($id: Int!) {
+    articles_by_pk(id: $id) {
+      id
+      title
+      content
+      view
+      created_at
+      user {
+        id
+        displayName
+        photoURL
+      }
+      category {
+        id
+        name
+      }
+      comments {
+        displayName
+        body
+        created_at
+      }
+    }
+  }
+`;

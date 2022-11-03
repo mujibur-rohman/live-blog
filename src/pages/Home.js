@@ -3,13 +3,19 @@ import SearchMobile from '../components/app/SearchMobile';
 import ArticleCard from '../components/article/ArticleCard';
 import { motion } from 'framer-motion';
 import { useSubscription } from '@apollo/client';
-import { GET_NEWEST_ARTICLES, GET_POPULAR_ARTICLES } from '../utility/constant';
+import {
+  GET_ARTICLES_BY_FOLLOWERS,
+  GET_NEWEST_ARTICLES,
+  GET_POPULAR_ARTICLES,
+} from '../utility/constant';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 const Home = () => {
   const carousel = useRef();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [width, setwidth] = useState(0);
   const { data, loading, error } = useSubscription(GET_POPULAR_ARTICLES);
   const {
@@ -17,6 +23,10 @@ const Home = () => {
     loading: loadingNewest,
     error: errorNewest,
   } = useSubscription(GET_NEWEST_ARTICLES);
+  const { data: feed, loading: loadingFeed } = useSubscription(
+    GET_ARTICLES_BY_FOLLOWERS,
+    { variables: { uid: user?.uid } }
+  );
   if (error) console.log(error);
   if (errorNewest) console.log(errorNewest);
 
@@ -94,8 +104,21 @@ const Home = () => {
             <h2 className="text-lg lg:text-2xl font-bold">Feeds</h2>
           </div>
           <div className="flex flex-col lg:grid grid-cols-2 gap-3">
-            {/* <ArticleCard />
-            <ArticleCard /> */}
+            {loadingFeed && (
+              <>
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+              </>
+            )}
+            {feed?.articles?.map((article) => (
+              <ArticleCard article={article} key={article?.id} />
+            ))}
+            {feed?.articles.length === 0 && (
+              <p className="text-center font-medium w-full">No Articles</p>
+            )}
           </div>
         </div>
       </div>
