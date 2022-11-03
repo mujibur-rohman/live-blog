@@ -19,3 +19,9 @@ export function nFormatter(num, digits) {
     ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
     : '0';
 }
+
+export function removeTags(str) {
+  if (str === null || str === '') return false;
+  else str = str.toString();
+  return str.replace(/(<([^>]+)>)/gi, '');
+}

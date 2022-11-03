@@ -263,6 +263,32 @@ export const ARTICLE_DETAIL = gql`
         displayName
         body
         created_at
+        photoURL
+      }
+    }
+  }
+`;
+
+export const ADD_COMMENT = gql`
+  mutation AddComment(
+    $articleId: Int!
+    $displayName: String!
+    $body: String!
+    $photoURL: String!
+  ) {
+    insert_comments(
+      objects: {
+        articleId: $articleId
+        displayName: $displayName
+        body: $body
+        photoURL: $photoURL
+      }
+    ) {
+      returning {
+        displayName
+        body
+        created_at
+        photoURL
       }
     }
   }

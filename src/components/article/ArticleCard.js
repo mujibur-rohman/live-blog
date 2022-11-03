@@ -1,15 +1,16 @@
 import { ChatBubbleBottomCenterIcon, EyeIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import parse from 'html-react-parser';
 import React from 'react';
 import { formatDistanceToNowStrict } from 'date-fns';
 import useAuth from '../../hooks/useAuth';
+import { removeTags } from '../../utility/formatter';
 
 const ArticleCard = ({ drag, article }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const dateToNow = formatDistanceToNowStrict(new Date(article.created_at));
+
   return (
     <motion.div
       className={`bg-white ${
@@ -18,7 +19,7 @@ const ArticleCard = ({ drag, article }) => {
     >
       <h3
         className="font-medium text-lg cursor-pointer"
-        onClick={() => navigate('/article/id')}
+        onClick={() => navigate(`/article/${article.id}`)}
       >
         {article.title}
       </h3>
@@ -29,10 +30,15 @@ const ArticleCard = ({ drag, article }) => {
         <span className="text-xs text-white">{article.category.name}</span>
       </div>
       <>
-        <div>{parse(article.content.substr(0, 200))}</div>
-        <span className="text-blue-400 inline underline cursor-pointer">
-          Baca Selengkapnya
-        </span>
+        <div>
+          {removeTags(article.content).substr(0, 100)}...{' '}
+          <span
+            onClick={() => navigate(`/article/${article.id}`)}
+            className="text-blue-400 inline underline cursor-pointer"
+          >
+            Baca Selengkapnya
+          </span>
+        </div>
       </>
       <div className="mt-4 flex justify-between">
         <span
