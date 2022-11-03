@@ -180,3 +180,64 @@ export const GET_MY_ARTICLES = gql`
     }
   }
 `;
+
+export const GET_ARTICLES_BY_FOLLOWERS = gql`
+  subscription GetArticlesByFollowers($uid: String!) {
+    articles(
+      where: { user: { followers: { follower: { _eq: $uid } } } }
+      order_by: { id: desc }
+    ) {
+      id
+      title
+      content
+      view
+      user {
+        id
+        displayName
+        email
+        photoURL
+      }
+      created_at
+      comments {
+        id
+      }
+      category {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_FOLLOWERS = gql`
+  subscription GetFollowers($uid: String!) {
+    followers(where: { userId: { _eq: $uid } }) {
+      id
+      follower
+    }
+  }
+`;
+
+export const ADD_FOLLOWERS = gql`
+  mutation Following($userId: String!, $follower: String!) {
+    insert_followers(objects: { userId: $userId, follower: $follower }) {
+      returning {
+        userId
+        follower
+      }
+    }
+  }
+`;
+
+export const UNFOLLOW = gql`
+  mutation Unfollow($userId: String!, $follower: String!) {
+    delete_followers(
+      where: { userId: { _eq: $userId }, follower: { _eq: $follower } }
+    ) {
+      returning {
+        userId
+        follower
+      }
+    }
+  }
+`;

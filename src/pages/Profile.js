@@ -5,15 +5,22 @@ import ArticleCard from '../components/article/ArticleCard';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import SkeletonProfile from '../components/skeleton/SkeletonProfile';
 import useAuth from '../hooks/useAuth';
-import { GET_MY_ARTICLES } from '../utility/constant';
+import { GET_FOLLOWERS, GET_MY_ARTICLES } from '../utility/constant';
 
 const Profile = () => {
-  const { user, followers } = useAuth();
+  const { user } = useAuth();
   const { data, loading, error } = useSubscription(GET_MY_ARTICLES, {
     variables: {
       uid: user.uid,
     },
   });
+
+  const { data: followers } = useSubscription(GET_FOLLOWERS, {
+    variables: {
+      uid: user.uid,
+    },
+  });
+
   const view = () => {
     if (data?.articles?.length !== undefined) {
       let count = 0;
@@ -50,7 +57,7 @@ const Profile = () => {
               </div>
               <div className="flex flex-col basis-4/12 justify-center items-center">
                 <p className="font-medium">Followers</p>
-                <span className="block">{followers?.length}</span>
+                <span className="block">{followers?.followers.length}</span>
               </div>
             </div>
             <div className="flex justify-center gap-3 w-full">

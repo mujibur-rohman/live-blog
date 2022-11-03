@@ -1,20 +1,32 @@
-import { useSubscription } from '@apollo/client';
+import { useMutation, useSubscription } from '@apollo/client';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import ArticleCard from '../components/article/ArticleCard';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import SkeletonProfile from '../components/skeleton/SkeletonProfile';
+import SpinnerButton from '../components/SpinnerButton';
 import useAuth from '../hooks/useAuth';
 import useAuthor from '../hooks/useAuthor';
-import useFollow from '../hooks/useFollow';
-import { GET_MY_ARTICLES } from '../utility/constant';
+import {
+  ADD_FOLLOWERS,
+  GET_FOLLOWERS,
+  GET_MY_ARTICLES,
+  UNFOLLOW,
+} from '../utility/constant';
 
 const Author = () => {
   const { id } = useParams();
   const author = useAuthor(id);
-  const { user, following } = useAuth();
-  const { follow, unfol } = useFollow();
+  const { user } = useAuth();
+  const [addFollowers, { loading: loadingFollow }] = useMutation(ADD_FOLLOWERS);
+  const [unfollow, { loading: loadingUnfollow }] = useMutation(UNFOLLOW);
   const { data, loading, error } = useSubscription(GET_MY_ARTICLES, {
+    variables: {
+      uid: id,
+    },
+  });
+  if (error) console.log(error);
+  const { data: followers } = useSubscription(GET_FOLLOWERS, {
     variables: {
       uid: id,
     },
@@ -31,7 +43,13 @@ const Author = () => {
     return null;
   };
 
-  if (error) console.log(error);
+  const followHandler = () => {
+    addFollowers({ variables: { userId: id, follower: user.uid } });
+  };
+  const unfollowHandler = () => {
+    unfollow({ variables: { userId: id, follower: user.uid } });
+  };
+
   return (
     <>
       {data?.articles?.length !== undefined ? (
@@ -56,37 +74,25 @@ const Author = () => {
               </div>
               <div className="flex flex-col basis-4/12 justify-center items-center">
                 <p className="font-medium">Followers</p>
-                <span className="block">{author.follower.length}</span>
+                <span className="block">{followers?.followers.length}</span>
               </div>
             </div>
             <div className="flex justify-center gap-3 w-full">
-              {author.follower.find((follower) => follower === user.uid) ? (
+              {followers?.followers.find(
+                (fol) => fol.follower === user?.uid
+              ) ? (
                 <button
-                  onClick={() =>
-                    unfol({
-                      followersAuthor: author.follower,
-                      uid: user.uid,
-                      authorId: author.id,
-                      followingUser: following,
-                    })
-                  }
+                  onClick={unfollowHandler}
                   className="btn bg-white text-primary text-sm w-6/12"
                 >
-                  Unfollow
+                  {loadingUnfollow ? <SpinnerButton /> : 'Unfollow'}
                 </button>
               ) : (
                 <button
-                  onClick={() =>
-                    follow({
-                      authorId: author.id,
-                      uid: user.uid,
-                      followersAuthor: author.follower,
-                      followingUser: following,
-                    })
-                  }
+                  onClick={followHandler}
                   className="btn bg-primary text-white text-sm w-6/12"
                 >
-                  Follow
+                  {loadingFollow ? <SpinnerButton /> : 'Follow'}
                 </button>
               )}
             </div>
