@@ -4,9 +4,11 @@ import { motion } from 'framer-motion';
 import parse from 'html-react-parser';
 import React from 'react';
 import { formatDistanceToNowStrict } from 'date-fns';
+import useAuth from '../../hooks/useAuth';
 
 const ArticleCard = ({ drag, article }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const dateToNow = formatDistanceToNowStrict(new Date(article.created_at));
   return (
     <motion.div
@@ -33,7 +35,16 @@ const ArticleCard = ({ drag, article }) => {
         </span>
       </>
       <div className="mt-4 flex justify-between">
-        <span className="text-sm text-text inline-block underline cursor-pointer">
+        <span
+          className="text-sm text-text inline-block underline cursor-pointer"
+          onClick={() => {
+            if (article.user.id === user.uid) {
+              navigate('/profile');
+            } else {
+              navigate(`/author/${article.user.id}`);
+            }
+          }}
+        >
           by {article.user.displayName}
         </span>
         <div className=" flex gap-3">

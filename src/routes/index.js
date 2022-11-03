@@ -7,6 +7,7 @@ import ArticleDetail from '../pages/ArticleDetail';
 import Articles from '../pages/Articles';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
+import Author from '../pages/Author';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
 import PrivateRoute from './PrivateRoute';
@@ -16,6 +17,7 @@ const SetupRoute = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/author/:id" element={<Author />} />
       <Route path="/articles" element={<Articles />}>
         <Route index element={<NewestArticles />} />
         <Route path=":category" element={<CategoryArticles />} />
