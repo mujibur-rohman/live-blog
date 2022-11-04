@@ -323,3 +323,35 @@ export const SEARCH_ARTICLES = gql`
     }
   }
 `;
+
+export const CATEGORIES = gql`
+  subscription GetCategories($limit: Int) {
+    categories(limit: $limit, order_by: { name: asc }) {
+      id
+      name
+    }
+  }
+`;
+
+export const ADD_CATEGORY = gql`
+  mutation AddCategory($name: String!) {
+    insert_categories(objects: { name: $name }) {
+      returning {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const CATEGORIES_POPULAR = gql`
+  subscription GetCategories($limit: Int = 5) {
+    categories(
+      order_by: { articles_aggregate: { count: desc } }
+      limit: $limit
+    ) {
+      id
+      name
+    }
+  }
+`;

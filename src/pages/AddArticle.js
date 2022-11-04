@@ -6,12 +6,13 @@ import * as yup from 'yup';
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import Select from 'react-select';
-import { ADD_ARTICLE } from '../utility/constant';
-import { useMutation } from '@apollo/client';
+import { ADD_ARTICLE, ADD_CATEGORY, CATEGORIES } from '../utility/constant';
+import { useMutation, useSubscription } from '@apollo/client';
 import useAuth from '../hooks/useAuth';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import SpinnerButton from '../components/SpinnerButton';
 
 const AddArticle = () => {
   const TextState = EditorState.createEmpty();
@@ -20,6 +21,21 @@ const AddArticle = () => {
   const [addArticle] = useMutation(ADD_ARTICLE);
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { data: categories } = useSubscription(CATEGORIES);
+  const [inputCat, setInputCat] = useState('');
+  const [addCategory, { loading: loadCategory }] = useMutation(ADD_CATEGORY);
+
+  const submitCat = (e) => {
+    e.preventDefault();
+    if (inputCat.trim()) {
+      addCategory({
+        variables: {
+          name: inputCat,
+        },
+      });
+      setInputCat('');
+    }
+  };
 
   const initialValues = {
     title: '',
@@ -64,13 +80,6 @@ const AddArticle = () => {
     }
   };
 
-  const optionsCategory = [
-    { value: 1, label: 'Olahraga' },
-    { value: 2, label: 'Fashion' },
-    { value: 3, label: 'Teknologi' },
-    { value: 4, label: 'Travel' },
-  ];
-
   return (
     <>
       <ToastContainer
@@ -101,7 +110,7 @@ const AddArticle = () => {
             );
           };
           return (
-            <Form className="flex flex-col gap-2">
+            <Form className="flex flex-col gap-2 h-screen">
               <div className="flex flex-col gap-2">
                 <label>
                   Title <span className="text-red-400">*</span>
@@ -137,7 +146,10 @@ const AddArticle = () => {
                   Category <span className="text-red-400">*</span>
                 </label>
                 <Select
-                  options={optionsCategory}
+                  className="absolute"
+                  options={categories?.categories.map((cat) => {
+                    return { value: cat.id, label: cat.name };
+                  })}
                   onChange={(e) => {
                     props.setFieldValue('category', e.value);
                   }}
@@ -157,12 +169,15 @@ const AddArticle = () => {
                       type="text"
                       className="input-text"
                       placeholder="Category"
+                      value={inputCat}
+                      onChange={(e) => setInputCat(e.target.value)}
                     />
                     <button
+                      onClick={submitCat}
                       type="button"
                       className="btn text-xs bg-primary text-white"
                     >
-                      Add
+                      {loadCategory ? <SpinnerButton /> : 'Add'}
                     </button>
                   </div>
                 )}
