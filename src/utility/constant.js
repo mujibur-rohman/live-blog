@@ -355,3 +355,15 @@ export const CATEGORIES_POPULAR = gql`
     }
   }
 `;
+
+export const UPDATE_VIEW = gql`
+  mutation UpdateView($id: Int!) {
+    update_articles(where: { id: { _eq: $id } }, _inc: { view: 1 }) {
+      returning {
+        id
+        title
+        view
+      }
+    }
+  }
+`;

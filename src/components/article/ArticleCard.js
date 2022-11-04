@@ -2,14 +2,25 @@ import { ChatBubbleBottomCenterIcon, EyeIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import React from 'react';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import useAuth from '../../hooks/useAuth';
 import { removeTags } from '../../utility/formatter';
+import { useMutation } from '@apollo/client';
+import { UPDATE_VIEW } from '../../utility/constant';
 
 const ArticleCard = ({ drag, article }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const dateToNow = formatDistanceToNowStrict(new Date(article.created_at));
+  const dateToNow = formatDistanceToNow(new Date(article.created_at));
+  const [incrementView] = useMutation(UPDATE_VIEW);
+  const clickCard = () => {
+    navigate(`/article/${article.id}`);
+    incrementView({
+      variables: {
+        id: article.id,
+      },
+    });
+  };
 
   return (
     <motion.div
@@ -17,10 +28,7 @@ const ArticleCard = ({ drag, article }) => {
         drag && 'active:cursor-grabbing cursor-grab'
       } rounded-2xl p-4 min-w-[13rem] md:min-w-[24rem] self-start`}
     >
-      <h3
-        className="font-medium text-lg cursor-pointer"
-        onClick={() => navigate(`/article/${article.id}`)}
-      >
+      <h3 className="font-medium text-lg cursor-pointer" onClick={clickCard}>
         {article.title}
       </h3>
       <div className="flex flex-col gap-1 mb-1">
@@ -33,7 +41,7 @@ const ArticleCard = ({ drag, article }) => {
         <div>
           {removeTags(article.content).substr(0, 100)}...{' '}
           <span
-            onClick={() => navigate(`/article/${article.id}`)}
+            onClick={clickCard}
             className="text-blue-400 inline underline cursor-pointer"
           >
             Baca Selengkapnya
