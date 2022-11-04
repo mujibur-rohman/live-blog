@@ -293,3 +293,33 @@ export const ADD_COMMENT = gql`
     }
   }
 `;
+
+export const SEARCH_ARTICLES = gql`
+  subscription SearchArticles($title: String!, $content: String) {
+    articles(
+      order_by: { id: desc }
+      where: {
+        _or: { title: { _ilike: $title }, content: { _ilike: $content } }
+      }
+    ) {
+      id
+      title
+      content
+      view
+      created_at
+      user {
+        id
+        displayName
+        email
+        photoURL
+      }
+      category {
+        id
+        name
+      }
+      comments {
+        id
+      }
+    }
+  }
+`;

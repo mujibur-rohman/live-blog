@@ -88,10 +88,10 @@ const Profile = () => {
         {data?.articles?.map((article) => (
           <ArticleCard article={article} key={article?.id} />
         ))}
-        {data?.articles.length === 0 && (
-          <p className="text-center font-medium w-full">No Articles</p>
-        )}
       </div>
+      {data?.articles.length === 0 && (
+        <p className="text-center font-medium w-full">No Articles</p>
+      )}
     </>
   );
 };

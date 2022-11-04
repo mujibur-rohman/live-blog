@@ -116,10 +116,10 @@ const Home = () => {
             {feed?.articles?.map((article) => (
               <ArticleCard article={article} key={article?.id} />
             ))}
-            {feed?.articles.length === 0 && (
-              <p className="text-center font-medium w-full">No Articles</p>
-            )}
           </div>
+          {feed?.articles.length === 0 && (
+            <p className="text-center font-medium w-full">No Articles</p>
+          )}
         </div>
       </div>
     </div>
