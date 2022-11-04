@@ -295,7 +295,7 @@ export const ADD_COMMENT = gql`
 `;
 
 export const SEARCH_ARTICLES = gql`
-  subscription SearchArticles($title: String!, $content: String) {
+  subscription SearchArticles($title: String = "%%", $content: String = "%%") {
     articles(
       order_by: { id: desc }
       where: {

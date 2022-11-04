@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import SearchMobile from '../components/app/SearchMobile';
 import ArticleCard from '../components/article/ArticleCard';
 import { motion } from 'framer-motion';
 import { useSubscription } from '@apollo/client';
@@ -11,6 +10,7 @@ import {
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import SearchInput from '../components/app/SearchInput';
 
 const Home = () => {
   const carousel = useRef();
@@ -40,7 +40,7 @@ const Home = () => {
 
   return (
     <div>
-      <SearchMobile className="bg-white md:hidden" />
+      <SearchInput className="bg-white md:hidden" />
 
       <div className="flex flex-col gap-7">
         <div>

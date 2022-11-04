@@ -11,7 +11,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 import Drawer from './Drawer';
-import SearchMobile from './SearchMobile';
+import SearchInput from './SearchInput';
 
 const Header = () => {
   const [showDrawer, setShowDrawer] = useState(false);
@@ -89,7 +89,7 @@ const Header = () => {
       </div>
 
       <div className="flex gap-5 items-center relative">
-        <SearchMobile className="hidden md:flex bg-gray-100" />
+        <SearchInput className="hidden md:flex bg-gray-100" />
         {!user ? (
           loading || (
             <button

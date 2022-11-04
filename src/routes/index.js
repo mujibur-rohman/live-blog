@@ -10,6 +10,7 @@ import Register from '../pages/auth/Register';
 import Author from '../pages/Author';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
+import Search from '../pages/Search';
 import PrivateRoute from './PrivateRoute';
 import ProtectedRoute from './ProtectedRoute';
 
@@ -22,6 +23,7 @@ const SetupRoute = () => {
         <Route index element={<NewestArticles />} />
         <Route path=":category" element={<CategoryArticles />} />
       </Route>
+      <Route path="/search/:input" element={<Search />} />
       <Route path="/article/:id" element={<ArticleDetail />} />
       <Route element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
