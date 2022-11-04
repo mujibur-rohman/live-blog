@@ -31,11 +31,9 @@ const ArticleCard = ({ drag, article }) => {
       <h3 className="font-medium text-lg cursor-pointer" onClick={clickCard}>
         {article.title}
       </h3>
+
       <div className="flex flex-col gap-1 mb-1">
         <span className="text-sm text-gray-400">{dateToNow}</span>
-      </div>
-      <div className="flex flex-col gap-1 mb-1 bg-orange-400 w-fit py-1 px-2 rounded-full">
-        <span className="text-xs text-white">{article.category.name}</span>
       </div>
       <>
         <div>
@@ -48,7 +46,10 @@ const ArticleCard = ({ drag, article }) => {
           </span>
         </div>
       </>
-      <div className="mt-4 flex justify-between">
+      <div className="flex my-2 flex-col gap-1 bg-orange-400 w-fit py-1 px-2 rounded-full">
+        <span className="text-xs text-white">{article.category.name}</span>
+      </div>
+      <div className="flex justify-between">
         <span
           className="text-sm text-text inline-block underline cursor-pointer"
           onClick={() => {

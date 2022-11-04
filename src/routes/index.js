@@ -11,6 +11,7 @@ import Author from '../pages/Author';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
 import Search from '../pages/Search';
+import UpdateArticle from '../pages/UpdateArticle';
 import PrivateRoute from './PrivateRoute';
 import ProtectedRoute from './ProtectedRoute';
 
@@ -28,6 +29,7 @@ const SetupRoute = () => {
       <Route element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/add-article" element={<AddArticle />} />
+        <Route path="/update/:id" element={<UpdateArticle />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/login" element={<Login />} />

@@ -1,8 +1,16 @@
 import { useMutation, useSubscription } from '@apollo/client';
-import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import {
+  PaperAirplaneIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from '@heroicons/react/24/solid';
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { ADD_COMMENT, ARTICLE_DETAIL } from '../utility/constant';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  ADD_COMMENT,
+  ARTICLE_DETAIL,
+  DELETE_ARTICLE,
+} from '../utility/constant';
 import parse from 'html-react-parser';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import { formatDistanceToNow } from 'date-fns';
@@ -13,10 +21,14 @@ const ArticleDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const [comment, setComment] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
   const { data, loading, error } = useSubscription(ARTICLE_DETAIL, {
     variables: { id: id },
   });
   const [addComent, { loading: loadingComment }] = useMutation(ADD_COMMENT);
+  const [deleteArticle, { loading: loadingDelete }] =
+    useMutation(DELETE_ARTICLE);
 
   if (error) console.log(error);
 
@@ -43,15 +55,82 @@ const ArticleDetail = () => {
     );
   }
 
+  const deleteHandler = async () => {
+    await deleteArticle({
+      variables: {
+        id: data?.articles_by_pk.id,
+      },
+    });
+    if (loadingDelete === false) {
+      navigate(-1);
+      setShowModal(false);
+    }
+  };
+
+  const modal = (
+    <div className="fixed inset-0 z-10 overflow-y-auto">
+      <div
+        className="fixed inset-0 w-full h-full bg-black opacity-40"
+        onClick={() => setShowModal(false)}
+      ></div>
+      <div className="flex items-center min-h-screen px-4 py-8">
+        <div className="relative w-1/2 max-w-lg p-4 mx-auto bg-white rounded-md shadow-lg">
+          <div className="mt-3 sm:flex">
+            <div className="mt-2 text-center sm:ml-4 sm:text-left">
+              <h4 className="text-lg font-medium text-gray-800">
+                Delete Article ?
+              </h4>
+              <div className="items-center gap-2 mt-3 sm:flex justify-en">
+                <button
+                  className="w-full mt-2 p-2.5 flex-1 text-white bg-red-600 rounded-md outline-none ring-offset-2 ring-red-600 focus:ring-2"
+                  onClick={deleteHandler}
+                >
+                  {loadingDelete ? <SpinnerButton /> : 'Delete'}
+                </button>
+                <button
+                  className="w-full mt-2 p-2.5 flex-1 text-gray-800 rounded-md outline-none border ring-offset-2 ring-indigo-600 focus:ring-2"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
+      {showModal && modal}
       <div className="bg-white p-4 rounded-lg">
         <div className="flex flex-col gap-1 mb-4">
-          <h3 className="text-xl font-medium">{data?.articles_by_pk.title}</h3>
+          <div className="flex justify-between">
+            <h3 className="text-xl font-medium">
+              {data?.articles_by_pk.title}
+            </h3>
+
+            {user.uid === data?.articles_by_pk.user.id && (
+              <div className="flex gap-2 cursor-pointer">
+                <TrashIcon
+                  className="w-6 text-red-400"
+                  onClick={() => setShowModal(true)}
+                />
+                <PencilSquareIcon
+                  className="w-6 text-orange-600"
+                  onClick={() => navigate(`/update/${data?.articles_by_pk.id}`)}
+                />
+              </div>
+            )}
+          </div>
           <span className="text-sm text-gray-400">
             {formatDistanceToNow(new Date(data?.articles_by_pk.created_at))}
           </span>
-          <span className="text-sm text-text inline-block underline cursor-pointer">
+          <span
+            className="text-sm text-text inline-block underline cursor-pointer"
+            onClick={() => navigate(`/author/${data?.articles_by_pk.user.id}`)}
+          >
             {data?.articles_by_pk.user.displayName}
           </span>
         </div>

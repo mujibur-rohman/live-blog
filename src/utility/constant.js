@@ -367,3 +367,36 @@ export const UPDATE_VIEW = gql`
     }
   }
 `;
+
+export const UPDATE_ARTICLE = gql`
+  mutation UpdateArticle(
+    $id: Int!
+    $title: String!
+    $category_id: Int!
+    $content: String!
+  ) {
+    update_articles(
+      where: { id: { _eq: $id } }
+      _set: { title: $title, content: $content, category_id: $category_id }
+    ) {
+      returning {
+        id
+        title
+        view
+      }
+    }
+  }
+`;
+
+export const DELETE_ARTICLE = gql`
+  mutation DeleteArticle($id: Int!) {
+    delete_comments(where: { articleId: { _eq: $id } }) {
+      returning {
+        id
+      }
+    }
+    delete_articles_by_pk(id: $id) {
+      id
+    }
+  }
+`;
