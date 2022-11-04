@@ -16,6 +16,7 @@ import SkeletonCard from '../components/skeleton/SkeletonCard';
 import { formatDistanceToNow } from 'date-fns';
 import useAuth from '../hooks/useAuth';
 import SpinnerButton from '../components/SpinnerButton';
+import { Helmet } from 'react-helmet';
 
 const ArticleDetail = () => {
   const { id } = useParams();
@@ -105,6 +106,9 @@ const ArticleDetail = () => {
     <>
       {showModal && modal}
       <div className="bg-white p-4 rounded-lg">
+        <Helmet>
+          <title>Detail Article</title>
+        </Helmet>
         <div className="flex flex-col gap-1 mb-4">
           <div className="flex justify-between">
             <h3 className="text-xl font-medium">

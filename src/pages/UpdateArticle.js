@@ -18,6 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import SpinnerButton from '../components/SpinnerButton';
 import Spinner from '../components/Spinner';
+import { Helmet } from 'react-helmet';
 
 const UpdateArticle = () => {
   const { id } = useParams();
@@ -103,6 +104,9 @@ const UpdateArticle = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Update Article</title>
+      </Helmet>
       <ToastContainer
         position="bottom-center"
         autoClose={2000}

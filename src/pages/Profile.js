@@ -1,6 +1,7 @@
 import { useSubscription } from '@apollo/client';
 import { EnvelopeIcon } from '@heroicons/react/24/solid';
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import ArticleCard from '../components/article/ArticleCard';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import SkeletonProfile from '../components/skeleton/SkeletonProfile';
@@ -35,6 +36,9 @@ const Profile = () => {
   if (error) console.log(error);
   return (
     <>
+      <Helmet>
+        <title>Profile</title>
+      </Helmet>
       {data?.articles?.length !== undefined ? (
         <div className="flex flex-col md:flex-row md:items-center justify-center border-b-[1px] pt-3 pb-7 gap-6">
           <div className="flex flex-col items-center">

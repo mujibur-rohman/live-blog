@@ -42,7 +42,7 @@ const ArticleCard = ({ drag, article }) => {
             onClick={clickCard}
             className="text-blue-400 inline underline cursor-pointer"
           >
-            Baca Selengkapnya
+            Read More
           </span>
         </div>
       </>

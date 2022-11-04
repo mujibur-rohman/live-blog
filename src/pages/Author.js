@@ -1,5 +1,6 @@
 import { useMutation, useSubscription } from '@apollo/client';
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import ArticleCard from '../components/article/ArticleCard';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
@@ -52,6 +53,9 @@ const Author = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{author.displayName}</title>
+      </Helmet>
       {data?.articles?.length !== undefined ? (
         <div className="flex flex-col md:flex-row md:items-center justify-center border-b-[1px] pt-3 pb-7 gap-6">
           <div className="flex flex-col items-center">
