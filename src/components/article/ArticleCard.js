@@ -53,7 +53,7 @@ const ArticleCard = ({ drag, article }) => {
         <span
           className="text-sm text-text inline-block underline cursor-pointer"
           onClick={() => {
-            if (article.user.id === user.uid) {
+            if (article.user.id === user?.uid) {
               navigate('/profile');
             } else {
               navigate(`/author/${article.user.id}`);

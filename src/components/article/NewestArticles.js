@@ -1,11 +1,9 @@
 import { useSubscription } from '@apollo/client';
-import React from 'react';
 import { GET_ALL_ARTICLES } from '../../utility/constant';
 import SkeletonCard from '../skeleton/SkeletonCard';
 import ArticleCard from './ArticleCard';
 
 const NewestArticles = () => {
-  // const { data, loading, error } = useQuery(GET_ALL_ARTICLES);
   const { data, loading, error } = useSubscription(GET_ALL_ARTICLES);
   if (error) console.log(error);
 
@@ -23,8 +21,8 @@ const NewestArticles = () => {
             <SkeletonCard />
           </>
         )}
-        {data?.articles?.map((article) => (
-          <ArticleCard article={article} key={article?.id} />
+        {data?.articles.map((article) => (
+          <ArticleCard article={article} key={article.id} />
         ))}
         {data?.articles.length === 0 && (
           <p className="text-center font-medium w-full">No Articles</p>

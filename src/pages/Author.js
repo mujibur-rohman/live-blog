@@ -1,7 +1,7 @@
 import { useMutation, useSubscription } from '@apollo/client';
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ArticleCard from '../components/article/ArticleCard';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import SkeletonProfile from '../components/skeleton/SkeletonProfile';
@@ -19,6 +19,7 @@ const Author = () => {
   const { id } = useParams();
   const author = useAuthor(id);
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [addFollowers, { loading: loadingFollow }] = useMutation(ADD_FOLLOWERS);
   const [unfollow, { loading: loadingUnfollow }] = useMutation(UNFOLLOW);
   const { data, loading, error } = useSubscription(GET_MY_ARTICLES, {
@@ -81,25 +82,34 @@ const Author = () => {
                 <span className="block">{followers?.followers.length}</span>
               </div>
             </div>
-            <div className="flex justify-center gap-3 w-full">
-              {followers?.followers.find(
-                (fol) => fol.follower === user?.uid
-              ) ? (
-                <button
-                  onClick={unfollowHandler}
-                  className="btn bg-white text-primary text-sm w-6/12"
-                >
-                  {loadingUnfollow ? <SpinnerButton /> : 'Unfollow'}
-                </button>
-              ) : (
-                <button
-                  onClick={followHandler}
-                  className="btn bg-primary text-white text-sm w-6/12"
-                >
-                  {loadingFollow ? <SpinnerButton /> : 'Follow'}
-                </button>
-              )}
-            </div>
+            {user?.uid ? (
+              <div className="flex justify-center gap-3 w-full">
+                {followers?.followers.find(
+                  (fol) => fol.follower === user?.uid
+                ) ? (
+                  <button
+                    onClick={unfollowHandler}
+                    className="btn bg-white text-primary text-sm w-6/12"
+                  >
+                    {loadingUnfollow ? <SpinnerButton /> : 'Unfollow'}
+                  </button>
+                ) : (
+                  <button
+                    onClick={followHandler}
+                    className="btn bg-primary text-white text-sm w-6/12"
+                  >
+                    {loadingFollow ? <SpinnerButton /> : 'Follow'}
+                  </button>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => navigate('/login')}
+                className="btn bg-primary text-white text-sm"
+              >
+                Login to Follow
+              </button>
+            )}
           </div>
         </div>
       ) : (

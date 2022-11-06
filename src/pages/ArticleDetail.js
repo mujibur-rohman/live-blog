@@ -115,7 +115,7 @@ const ArticleDetail = () => {
               {data?.articles_by_pk.title}
             </h3>
 
-            {user.uid === data?.articles_by_pk.user.id && (
+            {user?.uid === data?.articles_by_pk.user.id && (
               <div className="flex gap-2 cursor-pointer">
                 <TrashIcon
                   className="w-6 text-red-400"
@@ -168,25 +168,27 @@ const ArticleDetail = () => {
             </div>
           ))}
 
-          <div className="flex gap-2">
-            <textarea
-              onChange={(e) => setComment(e.target.value)}
-              value={comment}
-              type="text"
-              className="input-text text-sm w-full"
-              placeholder="Comment"
-            />
-            <div
-              onClick={submitComment}
-              className="py-2 px-3 bg-primary self-start rounded-lg cursor-pointer"
-            >
-              {loadingComment ? (
-                <SpinnerButton />
-              ) : (
-                <PaperAirplaneIcon className="w-5 text-white" />
-              )}
+          {user && (
+            <div className="flex gap-2">
+              <textarea
+                onChange={(e) => setComment(e.target.value)}
+                value={comment}
+                type="text"
+                className="input-text text-sm w-full"
+                placeholder="Comment"
+              />
+              <div
+                onClick={submitComment}
+                className="py-2 px-3 bg-primary self-start rounded-lg cursor-pointer"
+              >
+                {loadingComment ? (
+                  <SpinnerButton />
+                ) : (
+                  <PaperAirplaneIcon className="w-5 text-white" />
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>
