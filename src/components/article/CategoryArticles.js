@@ -1,7 +1,7 @@
 import { useSubscription } from '@apollo/client';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { GET_ARTICLES_BY_CATEGORY } from '../../utility/constant';
+import { GET_ARTICLES_BY_CATEGORY } from '../../graphql/subscription/articleSubscription';
 import SkeletonCard from '../skeleton/SkeletonCard';
 import ArticleCard from './ArticleCard';
 

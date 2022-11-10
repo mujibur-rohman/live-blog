@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import ArticleCard from '../components/article/ArticleCard';
 import { motion } from 'framer-motion';
 import { useSubscription } from '@apollo/client';
-import {
-  GET_ARTICLES_BY_FOLLOWERS,
-  GET_NEWEST_ARTICLES,
-  GET_POPULAR_ARTICLES,
-} from '../utility/constant';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import SearchInput from '../components/app/SearchInput';
+import {
+  GET_ARTICLES_BY_FOLLOWERS,
+  GET_NEWEST_ARTICLES,
+  GET_POPULAR_ARTICLES,
+} from '../graphql/subscription/articleSubscription';
 
 const Home = () => {
   const carousel = useRef();
@@ -99,28 +99,30 @@ const Home = () => {
             )}
           </div>
         </div>
-        <div>
-          <div className="mb-3 mt-5 md:mt-2 flex items-center">
-            <h2 className="text-lg lg:text-2xl font-bold">Feeds</h2>
-          </div>
-          <div className="flex flex-col lg:grid grid-cols-2 gap-3">
-            {loadingFeed && (
-              <>
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
-              </>
+        {user?.uid && (
+          <div>
+            <div className="mb-3 mt-5 md:mt-2 flex items-center">
+              <h2 className="text-lg lg:text-2xl font-bold">Feeds</h2>
+            </div>
+            <div className="flex flex-col lg:grid grid-cols-2 gap-3">
+              {loadingFeed && (
+                <>
+                  <SkeletonCard />
+                  <SkeletonCard />
+                  <SkeletonCard />
+                  <SkeletonCard />
+                  <SkeletonCard />
+                </>
+              )}
+              {feed?.articles?.map((article) => (
+                <ArticleCard article={article} key={article?.id} />
+              ))}
+            </div>
+            {feed?.articles.length === 0 && (
+              <p className="text-center font-medium w-full">No Articles</p>
             )}
-            {feed?.articles?.map((article) => (
-              <ArticleCard article={article} key={article?.id} />
-            ))}
           </div>
-          {feed?.articles.length === 0 && (
-            <p className="text-center font-medium w-full">No Articles</p>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

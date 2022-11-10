@@ -8,7 +8,7 @@ module.exports = {
         primaryAlt: '#743EFF',
         primaryDisable: '#a17cff',
         background: '#f6f6f6',
-        text: '181818',
+        text: '#181818',
       },
     },
     fontFamily: {

@@ -2,7 +2,7 @@ import { useSubscription } from '@apollo/client';
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { NavLink, Outlet } from 'react-router-dom';
-import { CATEGORIES_POPULAR } from '../utility/constant';
+import { CATEGORIES_POPULAR } from '../graphql/subscription/articleSubscription';
 
 const Articles = () => {
   const { data: categories } = useSubscription(CATEGORIES_POPULAR);

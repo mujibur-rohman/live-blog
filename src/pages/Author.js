@@ -5,15 +5,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ArticleCard from '../components/article/ArticleCard';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import SkeletonProfile from '../components/skeleton/SkeletonProfile';
-import SpinnerButton from '../components/SpinnerButton';
+import SpinnerButton from '../components/app/SpinnerButton';
 import useAuth from '../hooks/useAuth';
 import useAuthor from '../hooks/useAuthor';
-import {
-  ADD_FOLLOWERS,
-  GET_FOLLOWERS,
-  GET_MY_ARTICLES,
-  UNFOLLOW,
-} from '../utility/constant';
+import { nFormatter } from '../utility/formatter';
+import { GET_MY_ARTICLES } from '../graphql/subscription/articleSubscription';
+import { ADD_FOLLOWERS, UNFOLLOW } from '../graphql/mutation/userMutation';
+import { GET_FOLLOWERS } from '../graphql/subscription/userSubscription';
 
 const Author = () => {
   const { id } = useParams();
@@ -40,7 +38,7 @@ const Author = () => {
       data?.articles?.forEach((element) => {
         count += element.view;
       });
-      return count;
+      return nFormatter(count);
     }
     return null;
   };
@@ -71,7 +69,9 @@ const Author = () => {
             <div className="flex justify-between w-full mb-3">
               <div className="flex flex-col basis-4/12 justify-center items-center">
                 <p className="font-medium">Article</p>
-                <span className="block">{data?.articles.length}</span>
+                <span className="block">
+                  {nFormatter(data?.articles.length)}
+                </span>
               </div>
               <div className="flex flex-col basis-4/12 justify-center items-center">
                 <p className="font-medium">Total View</p>
@@ -79,7 +79,9 @@ const Author = () => {
               </div>
               <div className="flex flex-col basis-4/12 justify-center items-center">
                 <p className="font-medium">Followers</p>
-                <span className="block">{followers?.followers.length}</span>
+                <span className="block">
+                  {nFormatter(followers?.followers.length)}
+                </span>
               </div>
             </div>
             {user?.uid ? (

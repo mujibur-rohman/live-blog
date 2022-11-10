@@ -1,58 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const ADD_USERS = gql`
-  mutation AddUser(
-    $id: String!
-    $displayName: String!
-    $email: String!
-    $photoURL: String!
-  ) {
-    insert_users(
-      objects: {
-        id: $id
-        displayName: $displayName
-        email: $email
-        photoURL: $photoURL
-      }
-    ) {
-      returning {
-        id
-        displayName
-        email
-        photoURL
-      }
-    }
-  }
-`;
-
-export const ADD_ARTICLE = gql`
-  mutation AddArticle(
-    $title: String!
-    $content: String!
-    $category_id: Int!
-    $userId: String!
-  ) {
-    insert_articles(
-      objects: {
-        title: $title
-        content: $content
-        category_id: $category_id
-        userId: $userId
-      }
-    ) {
-      returning {
-        id
-        title
-        content
-        view
-        category_id
-        userId
-        created_at
-      }
-    }
-  }
-`;
-
 export const GET_ALL_ARTICLES = gql`
   subscription GetAllArticles {
     articles(order_by: { id: desc }) {
@@ -209,91 +156,6 @@ export const GET_ARTICLES_BY_FOLLOWERS = gql`
   }
 `;
 
-export const GET_FOLLOWERS = gql`
-  subscription GetFollowers($uid: String!) {
-    followers(where: { userId: { _eq: $uid } }) {
-      id
-      follower
-    }
-  }
-`;
-
-export const ADD_FOLLOWERS = gql`
-  mutation Following($userId: String!, $follower: String!) {
-    insert_followers(objects: { userId: $userId, follower: $follower }) {
-      returning {
-        userId
-        follower
-      }
-    }
-  }
-`;
-
-export const UNFOLLOW = gql`
-  mutation Unfollow($userId: String!, $follower: String!) {
-    delete_followers(
-      where: { userId: { _eq: $userId }, follower: { _eq: $follower } }
-    ) {
-      returning {
-        userId
-        follower
-      }
-    }
-  }
-`;
-
-export const ARTICLE_DETAIL = gql`
-  subscription ArticleDetail($id: Int!) {
-    articles_by_pk(id: $id) {
-      id
-      title
-      content
-      view
-      created_at
-      user {
-        id
-        displayName
-        photoURL
-      }
-      category {
-        id
-        name
-      }
-      comments {
-        displayName
-        body
-        created_at
-        photoURL
-      }
-    }
-  }
-`;
-
-export const ADD_COMMENT = gql`
-  mutation AddComment(
-    $articleId: Int!
-    $displayName: String!
-    $body: String!
-    $photoURL: String!
-  ) {
-    insert_comments(
-      objects: {
-        articleId: $articleId
-        displayName: $displayName
-        body: $body
-        photoURL: $photoURL
-      }
-    ) {
-      returning {
-        displayName
-        body
-        created_at
-        photoURL
-      }
-    }
-  }
-`;
-
 export const SEARCH_ARTICLES = gql`
   subscription SearchArticles($title: String = "%%", $content: String = "%%") {
     articles(
@@ -333,12 +195,28 @@ export const CATEGORIES = gql`
   }
 `;
 
-export const ADD_CATEGORY = gql`
-  mutation AddCategory($name: String!) {
-    insert_categories(objects: { name: $name }) {
-      returning {
+export const ARTICLE_DETAIL = gql`
+  subscription ArticleDetail($id: Int!) {
+    articles_by_pk(id: $id) {
+      id
+      title
+      content
+      view
+      created_at
+      user {
+        id
+        displayName
+        photoURL
+      }
+      category {
         id
         name
+      }
+      comments {
+        displayName
+        body
+        created_at
+        photoURL
       }
     }
   }
@@ -352,51 +230,6 @@ export const CATEGORIES_POPULAR = gql`
     ) {
       id
       name
-    }
-  }
-`;
-
-export const UPDATE_VIEW = gql`
-  mutation UpdateView($id: Int!) {
-    update_articles(where: { id: { _eq: $id } }, _inc: { view: 1 }) {
-      returning {
-        id
-        title
-        view
-      }
-    }
-  }
-`;
-
-export const UPDATE_ARTICLE = gql`
-  mutation UpdateArticle(
-    $id: Int!
-    $title: String!
-    $category_id: Int!
-    $content: String!
-  ) {
-    update_articles(
-      where: { id: { _eq: $id } }
-      _set: { title: $title, content: $content, category_id: $category_id }
-    ) {
-      returning {
-        id
-        title
-        view
-      }
-    }
-  }
-`;
-
-export const DELETE_ARTICLE = gql`
-  mutation DeleteArticle($id: Int!) {
-    delete_comments(where: { articleId: { _eq: $id } }) {
-      returning {
-        id
-      }
-    }
-    delete_articles_by_pk(id: $id) {
-      id
     }
   }
 `;

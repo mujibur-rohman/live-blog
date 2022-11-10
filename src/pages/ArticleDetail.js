@@ -6,17 +6,17 @@ import {
 } from '@heroicons/react/24/solid';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  ADD_COMMENT,
-  ARTICLE_DETAIL,
-  DELETE_ARTICLE,
-} from '../utility/constant';
 import parse from 'html-react-parser';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import { formatDistanceToNow } from 'date-fns';
 import useAuth from '../hooks/useAuth';
-import SpinnerButton from '../components/SpinnerButton';
+import SpinnerButton from '../components/app/SpinnerButton';
 import { Helmet } from 'react-helmet';
+import {
+  ADD_COMMENT,
+  DELETE_ARTICLE,
+} from '../graphql/mutation/articleMutation';
+import { ARTICLE_DETAIL } from '../graphql/subscription/articleSubscription';
 
 const ArticleDetail = () => {
   const { id } = useParams();

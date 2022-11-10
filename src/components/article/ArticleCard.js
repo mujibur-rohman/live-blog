@@ -4,10 +4,9 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import useAuth from '../../hooks/useAuth';
-import { removeTags } from '../../utility/formatter';
+import { nFormatter, removeTags } from '../../utility/formatter';
 import { useMutation } from '@apollo/client';
-import { UPDATE_VIEW } from '../../utility/constant';
-
+import { UPDATE_VIEW } from '../../graphql/mutation/articleMutation';
 const ArticleCard = ({ drag, article }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -65,7 +64,7 @@ const ArticleCard = ({ drag, article }) => {
         <div className=" flex gap-3">
           <div className="footer-card">
             <EyeIcon width="18" />
-            <span className="text-sm">{article.view}</span>
+            <span className="text-sm">{nFormatter(article.view)}</span>
           </div>
           <div className="footer-card">
             <ChatBubbleBottomCenterIcon width="18" />

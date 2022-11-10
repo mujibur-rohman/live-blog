@@ -6,19 +6,22 @@ import * as yup from 'yup';
 import { convertToRaw, ContentState, convertFromHTML } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import Select from 'react-select';
-import {
-  ADD_CATEGORY,
-  ARTICLE_DETAIL,
-  CATEGORIES,
-  UPDATE_ARTICLE,
-} from '../utility/constant';
+
 import { useMutation, useSubscription } from '@apollo/client';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import SpinnerButton from '../components/SpinnerButton';
-import Spinner from '../components/Spinner';
+import SpinnerButton from '../components/app/SpinnerButton';
+import Spinner from '../components/app/Spinner';
 import { Helmet } from 'react-helmet';
+import {
+  ADD_CATEGORY,
+  UPDATE_ARTICLE,
+} from '../graphql/mutation/articleMutation';
+import {
+  ARTICLE_DETAIL,
+  CATEGORIES,
+} from '../graphql/subscription/articleSubscription';
 
 const UpdateArticle = () => {
   const { id } = useParams();

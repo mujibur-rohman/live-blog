@@ -4,7 +4,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { toast } from 'react-toastify';
 import { auth, db, storage } from '../firebase/config';
 import { useMutation } from '@apollo/client';
-import { ADD_USERS } from '../utility/constant';
+import { ADD_USERS } from '../graphql/mutation/userMutation';
 
 export default function useRegister() {
   const [addUser] = useMutation(ADD_USERS);

@@ -5,8 +5,10 @@ import { Helmet } from 'react-helmet';
 import ArticleCard from '../components/article/ArticleCard';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import SkeletonProfile from '../components/skeleton/SkeletonProfile';
+import { GET_MY_ARTICLES } from '../graphql/subscription/articleSubscription';
+import { GET_FOLLOWERS } from '../graphql/subscription/userSubscription';
 import useAuth from '../hooks/useAuth';
-import { GET_FOLLOWERS, GET_MY_ARTICLES } from '../utility/constant';
+import { nFormatter } from '../utility/formatter';
 
 const Profile = () => {
   const { user } = useAuth();
@@ -28,7 +30,7 @@ const Profile = () => {
       data?.articles?.forEach((element) => {
         count += element.view;
       });
-      return count;
+      return nFormatter(count);
     }
     return null;
   };
@@ -53,7 +55,9 @@ const Profile = () => {
             <div className="flex justify-between w-full mb-3">
               <div className="flex flex-col basis-4/12 justify-center items-center">
                 <p className="font-medium">Article</p>
-                <span className="block">{data?.articles.length}</span>
+                <span className="block">
+                  {nFormatter(data?.articles.length)}
+                </span>
               </div>
               <div className="flex flex-col basis-4/12 justify-center items-center">
                 <p className="font-medium">Total View</p>
@@ -61,7 +65,9 @@ const Profile = () => {
               </div>
               <div className="flex flex-col basis-4/12 justify-center items-center">
                 <p className="font-medium">Followers</p>
-                <span className="block">{followers?.followers.length}</span>
+                <span className="block">
+                  {nFormatter(followers?.followers.length)}
+                </span>
               </div>
             </div>
             <div className="flex justify-center gap-3 w-full">

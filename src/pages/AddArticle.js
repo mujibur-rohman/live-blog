@@ -6,14 +6,15 @@ import * as yup from 'yup';
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import Select from 'react-select';
-import { ADD_ARTICLE, ADD_CATEGORY, CATEGORIES } from '../utility/constant';
 import { useMutation, useSubscription } from '@apollo/client';
 import useAuth from '../hooks/useAuth';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import SpinnerButton from '../components/SpinnerButton';
+import SpinnerButton from '../components/app/SpinnerButton';
 import { Helmet } from 'react-helmet';
+import { ADD_ARTICLE, ADD_CATEGORY } from '../graphql/mutation/articleMutation';
+import { CATEGORIES } from '../graphql/subscription/articleSubscription';
 
 const AddArticle = () => {
   const TextState = EditorState.createEmpty();

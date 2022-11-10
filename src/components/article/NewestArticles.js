@@ -1,8 +1,7 @@
 import { useSubscription } from '@apollo/client';
-import { GET_ALL_ARTICLES } from '../../utility/constant';
+import { GET_ALL_ARTICLES } from '../../graphql/subscription/articleSubscription';
 import SkeletonCard from '../skeleton/SkeletonCard';
 import ArticleCard from './ArticleCard';
-
 const NewestArticles = () => {
   const { data, loading, error } = useSubscription(GET_ALL_ARTICLES);
   if (error) console.log(error);

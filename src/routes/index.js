@@ -9,6 +9,7 @@ import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import Author from '../pages/Author';
 import Home from '../pages/Home';
+import NotFound from '../pages/NotFound';
 import Profile from '../pages/Profile';
 import Search from '../pages/Search';
 import UpdateArticle from '../pages/UpdateArticle';
@@ -35,6 +36,7 @@ const SetupRoute = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
