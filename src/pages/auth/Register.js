@@ -9,10 +9,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as yup from 'yup';
+import useRegister from '../../hooks/useRegister';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showCPassword, setShowCPassword] = useState(false);
+  const register = useRegister();
 
   const initialValues = {
     displayName: '',
@@ -22,22 +26,42 @@ const Register = () => {
     photo: null,
   };
   const validationSchema = yup.object({
-    displayName: yup.string().required().trim(),
+    displayName: yup
+      .string()
+      .required('display name is a required field')
+      .trim(),
     email: yup.string().required().email().trim(),
     password: yup.string().required().trim().min(6),
     confirmPassword: yup
       .string()
       .oneOf([yup.ref('password'), null], 'password must match')
-      .required(),
+      .required('confirm password is a required field'),
     photo: yup.mixed().required(),
   });
 
   const onSubmit = async (values) => {
-    console.log(values);
+    await register(
+      values.email,
+      values.password,
+      values.displayName,
+      values.photo
+    );
   };
 
   return (
-    <div className="bg-primary h-fit px-10 pt-0 pb-10">
+    <div className=" h-fit pb-10">
+      <ToastContainer
+        position="bottom-center"
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={false}
+        pauseOnHover={false}
+        theme="dark"
+      />
       <div className="bg-white mt-16 flex flex-col gap-4 mx-auto w-3/3 md:w-1/2 lg:w-1/3 p-4 rounded-lg">
         <p className="text-2xl pl-3 font-bold text-primary text-center">
           Register
@@ -174,7 +198,7 @@ const Register = () => {
                       : 'bg-primary'
                   } text-white`}
                 >
-                  Register
+                  {props.isSubmitting ? 'Please Wait' : 'Register'}
                 </button>
               </Form>
             );

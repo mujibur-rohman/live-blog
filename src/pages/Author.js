@@ -1,26 +1,34 @@
-import { useSubscription } from '@apollo/client';
-import { EnvelopeIcon } from '@heroicons/react/24/solid';
+import { useMutation, useSubscription } from '@apollo/client';
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router-dom';
 import ArticleCard from '../components/article/ArticleCard';
 import SkeletonCard from '../components/skeleton/SkeletonCard';
 import SkeletonProfile from '../components/skeleton/SkeletonProfile';
-import { GET_MY_ARTICLES } from '../graphql/subscription/articleSubscription';
-import { GET_FOLLOWERS } from '../graphql/subscription/userSubscription';
+import SpinnerButton from '../components/app/SpinnerButton';
 import useAuth from '../hooks/useAuth';
+import useAuthor from '../hooks/useAuthor';
 import { nFormatter } from '../utility/formatter';
+import { GET_MY_ARTICLES } from '../graphql/subscription/articleSubscription';
+import { ADD_FOLLOWERS, UNFOLLOW } from '../graphql/mutation/userMutation';
+import { GET_FOLLOWERS } from '../graphql/subscription/userSubscription';
 
-const Profile = () => {
+const Author = () => {
+  const { id } = useParams();
+  const author = useAuthor(id);
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [addFollowers, { loading: loadingFollow }] = useMutation(ADD_FOLLOWERS);
+  const [unfollow, { loading: loadingUnfollow }] = useMutation(UNFOLLOW);
   const { data, loading, error } = useSubscription(GET_MY_ARTICLES, {
     variables: {
-      uid: user.uid,
+      uid: id,
     },
   });
-
+  if (error) console.log(error);
   const { data: followers } = useSubscription(GET_FOLLOWERS, {
     variables: {
-      uid: user.uid,
+      uid: id,
     },
   });
 
@@ -35,23 +43,29 @@ const Profile = () => {
     return null;
   };
 
-  if (error) console.log(error);
+  const followHandler = () => {
+    addFollowers({ variables: { userId: id, follower: user.uid } });
+  };
+  const unfollowHandler = () => {
+    unfollow({ variables: { userId: id, follower: user.uid } });
+  };
+
   return (
     <>
       <Helmet>
-        <title>Profile</title>
+        <title>{author.displayName}</title>
       </Helmet>
       {data?.articles?.length !== undefined ? (
         <div className="flex flex-col md:flex-row md:items-center justify-center border-b-[1px] pt-3 pb-7 gap-6">
           <div className="flex flex-col items-center">
             <img
-              src={user.photoURL}
+              src={author.photoURL}
               alt="avatar"
               className="w-24 object-cover h-24 rounded-full mb-3"
             />
-            <p className="font-bold">{user.displayName}</p>
+            <p className="font-bold">{author.displayName}</p>
           </div>
-          <div className="w-full basis-7/12 flex flex-col gap-3 mb-5 items-center">
+          <div className="w-full basis-7/12 flex flex-col gap-3 mb-5 justify-center">
             <div className="flex justify-between w-full mb-3">
               <div className="flex flex-col basis-4/12 justify-center items-center">
                 <p className="font-medium">Article</p>
@@ -70,14 +84,34 @@ const Profile = () => {
                 </span>
               </div>
             </div>
-            <div className="flex justify-center gap-3 w-full">
-              <div className="bg-primary p-2 rounded-lg">
-                <EnvelopeIcon width="20" className="text-white" />
+            {user?.uid ? (
+              <div className="flex justify-center gap-3 w-full">
+                {followers?.followers.find(
+                  (fol) => fol.follower === user?.uid
+                ) ? (
+                  <button
+                    onClick={unfollowHandler}
+                    className="btn bg-white text-primary text-sm w-6/12"
+                  >
+                    {loadingUnfollow ? <SpinnerButton /> : 'Unfollow'}
+                  </button>
+                ) : (
+                  <button
+                    onClick={followHandler}
+                    className="btn bg-primary text-white text-sm w-6/12"
+                  >
+                    {loadingFollow ? <SpinnerButton /> : 'Follow'}
+                  </button>
+                )}
               </div>
-              <button className="btn bg-primary text-white text-sm w-fit lg:w-3/4">
-                {user.email}
+            ) : (
+              <button
+                onClick={() => navigate('/login')}
+                className="btn bg-primary text-white text-sm"
+              >
+                Login to Follow
               </button>
-            </div>
+            )}
           </div>
         </div>
       ) : (
@@ -98,12 +132,12 @@ const Profile = () => {
         {data?.articles?.map((article) => (
           <ArticleCard article={article} key={article?.id} />
         ))}
+        {data?.articles.length === 0 && (
+          <p className="text-center font-medium w-full">No Articles</p>
+        )}
       </div>
-      {data?.articles.length === 0 && (
-        <p className="text-center font-medium w-full">No Articles</p>
-      )}
     </>
   );
 };
 
-export default Profile;
+export default Author;

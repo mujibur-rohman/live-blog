@@ -8,9 +8,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as yup from 'yup';
+import useLogin from '../../hooks/useLogin';
+import { ToastContainer } from 'react-toastify';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const login = useLogin();
 
   const initialValues = {
     email: '',
@@ -22,10 +25,22 @@ const Login = () => {
   });
 
   const onSubmit = async (values) => {
-    console.log(values);
+    await login(values.email, values.password);
   };
   return (
-    <div className="bg-primary h-screen pt-10 pb-10">
+    <div className="h-screen pb-10">
+      <ToastContainer
+        position="bottom-center"
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={false}
+        pauseOnHover={false}
+        theme="dark"
+      />
       <div className="bg-white mt-16 flex flex-col gap-4 mx-auto w-2/3 md:w-1/2 lg:w-1/3 p-4 rounded-lg">
         <p className="text-2xl pl-3 font-bold text-primary text-center">
           Login
@@ -87,8 +102,16 @@ const Login = () => {
                     )}
                   </ErrorMessage>
                 </div>
-                <button className="btn bg-primary text-white" type="submit">
-                  Login
+                <button
+                  disabled={!props.isValid || props.isSubmitting}
+                  type="submit"
+                  className={`btn ${
+                    !props.isValid || props.isSubmitting
+                      ? 'bg-primaryDisable'
+                      : 'bg-primary'
+                  } text-white`}
+                >
+                  {props.isSubmitting ? 'Please Wait' : 'Login'}
                 </button>
               </Form>
             );

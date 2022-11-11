@@ -1,31 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TextEditor from '../components/textEditor/TextEditor';
 import { EditorState } from 'draft-js';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
-import { convertToRaw } from 'draft-js';
+import { convertToRaw, ContentState, convertFromHTML } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import Select from 'react-select';
+
 import { useMutation, useSubscription } from '@apollo/client';
-import useAuth from '../hooks/useAuth';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SpinnerButton from '../components/app/SpinnerButton';
+import Spinner from '../components/app/Spinner';
 import { Helmet } from 'react-helmet';
-import { ADD_ARTICLE, ADD_CATEGORY } from '../graphql/mutation/articleMutation';
-import { CATEGORIES } from '../graphql/subscription/articleSubscription';
+import {
+  ADD_CATEGORY,
+  UPDATE_ARTICLE,
+} from '../graphql/mutation/articleMutation';
+import {
+  ARTICLE_DETAIL,
+  CATEGORIES,
+} from '../graphql/subscription/articleSubscription';
 
-const AddArticle = () => {
-  const TextState = EditorState.createEmpty();
-  const [content, setContent] = useState(TextState);
+const UpdateArticle = () => {
+  const { id } = useParams();
+  const [content, setContent] = useState(null);
+  const { data, loading } = useSubscription(ARTICLE_DETAIL, {
+    variables: { id: id },
+  });
   const [showInputCategory, setShowInputCategory] = useState(false);
-  const [addArticle] = useMutation(ADD_ARTICLE);
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { data: categories } = useSubscription(CATEGORIES);
   const [inputCat, setInputCat] = useState('');
   const [addCategory, { loading: loadCategory }] = useMutation(ADD_CATEGORY);
+  const [updateArticle] = useMutation(UPDATE_ARTICLE);
+  useEffect(() => {
+    if (loading === false && data) {
+      setContent(
+        EditorState.createWithContent(
+          ContentState.createFromBlockArray(
+            convertFromHTML(data?.articles_by_pk.content)
+          )
+        )
+      );
+    }
+  }, [loading, data]);
 
   const submitCat = (e) => {
     e.preventDefault();
@@ -40,33 +60,32 @@ const AddArticle = () => {
   };
 
   const initialValues = {
-    title: '',
-    content: '',
-    category: '',
+    title: data?.articles_by_pk.title,
+    content: data?.articles_by_pk.content,
+    category: data?.articles_by_pk.category.id,
   };
 
   const validationSchema = yup.object({
     title: yup.string().required().trim(),
-    content: yup.string().required().trim(),
-    category: yup.string().required().trim(),
+    content: yup.string().required(),
+    category: yup.number().required(),
   });
 
   const onSubmit = async (values, props) => {
     if (values.content === '<p></p>\n') {
       props.setFieldValue('content', '');
     } else {
-      await addArticle({
+      await updateArticle({
         variables: {
+          id: id,
           title: values.title,
           content: values.content,
           category_id: values.category,
-          userId: user.uid,
         },
       });
       props.resetForm();
-      setContent(EditorState.createEmpty());
       props.setSubmitting(false);
-      toast.success('Successful Article Added', {
+      toast.success('Articel Updated', {
         position: 'bottom-center',
         autoClose: 2000,
         hideProgressBar: false,
@@ -77,13 +96,20 @@ const AddArticle = () => {
         theme: 'dark',
       });
       setTimeout(() => {
-        navigate('/');
+        navigate(-1);
       }, 3000);
     }
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <>
+      <Helmet>
+        <title>Update Article</title>
+      </Helmet>
       <ToastContainer
         position="bottom-center"
         autoClose={2000}
@@ -95,11 +121,8 @@ const AddArticle = () => {
         pauseOnHover={false}
         theme="dark"
       />
-      <Helmet>
-        <title>Add Article</title>
-      </Helmet>
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-bold">New Article</h2>
+        <h2 className="text-lg font-bold">Update Article</h2>
       </div>
       <Formik
         initialValues={initialValues}
@@ -151,13 +174,15 @@ const AddArticle = () => {
                   Category <span className="text-red-400">*</span>
                 </label>
                 <Select
-                  isLoading={loadCategory}
-                  className="absolute"
                   options={categories?.categories.map((cat) => {
                     return { value: cat.id, label: cat.name };
                   })}
                   onChange={(e) => {
                     props.setFieldValue('category', e.value);
+                  }}
+                  defaultValue={{
+                    value: data?.articles_by_pk.category.name,
+                    label: data?.articles_by_pk.category.name,
                   }}
                 />
                 <ErrorMessage name="category">
@@ -189,7 +214,7 @@ const AddArticle = () => {
                 )}
               </div>
               <button
-                disabled={!props.isValid || props.isSubmitting}
+                disabled={!props.isValid || props.isSubmitting || loading}
                 type="submit"
                 className={`btn ${
                   !props.isValid || props.isSubmitting
@@ -197,7 +222,7 @@ const AddArticle = () => {
                     : 'bg-primary'
                 } text-white mt-6`}
               >
-                {props.isSubmitting ? 'Please Wait' : 'Publish'}
+                {props.isSubmitting || loading ? 'Please Wait' : 'Publish'}
               </button>
             </Form>
           );
@@ -207,4 +232,4 @@ const AddArticle = () => {
   );
 };
 
-export default AddArticle;
+export default UpdateArticle;
